@@ -46,6 +46,7 @@ RSpec.describe 'show page' do
     within("#item-#{@invoice.items.last.id}") do
       expect(page).to_not have_content("Status: #{@invoice.status}")
       select('shipped', from: 'invoice_item_status')
+      expect(page).to have_select('invoice_item_status', selected: 'shipped')
       expect(page).to have_content('shipped')
     end
   end
