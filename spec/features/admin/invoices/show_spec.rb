@@ -1,11 +1,11 @@
 require 'rails_helper'
 # FactoryBot.find_definitions
 
-RSpec.describe "admin index show page" do
+RSpec.describe "admin invoice show page" do
   before :each do
     @customer = create(:customer)
 
-    @invoice = create(:invoice, customer: @customer, created_at: "2012-03-25 09:54:09 UTC")
+    @invoice = create(:invoice, customer: @customer, created_at: "2012-03-25 09:54:09 UTC", status: 0)
 
     @item1 = create(:item)
     @item2 = create(:item)
@@ -42,5 +42,16 @@ RSpec.describe "admin index show page" do
     visit "/admin/invoices/#{@invoice.id}"
 
     expect(page).to have_content("Total Revenue: $30.00")
+  end
+
+  it 'has a dropdown form to update the status' do
+
+    visit "/admin/invoices/#{@invoice.id}"
+
+    expect(page).to have_content('Status: cancelled')
+    expect(page).to have_content('cancelled completed in progress')
+    expect(page).not_to have_content('Status: in progress')
+    select('in progress', from: :change_status)
+    expect(page).to have_content('Status: in progress')
   end
 end

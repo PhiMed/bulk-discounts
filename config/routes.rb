@@ -20,8 +20,9 @@ Rails.application.routes.draw do
   namespace :admin do
     get '/', to: 'base#show' #route for admin dashboard
     resources :merchants, only: [:index, :show, :edit, :update]
-    
+
     get '/invoices', to: 'invoices#index'
     get '/invoices/:id', to: 'invoices#show'
+    patch '/invoices/:id', to: 'invoices#update'
   end
 end
