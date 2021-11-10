@@ -13,7 +13,7 @@ class Invoice < ApplicationRecord
       joins(:invoice_items)
       .where(invoice_items: {status: ['0','1']})
       .group(:id)
-      .order(:updated_at)
+      .order(:created_at )
     end
 
     def invoice_revenue
