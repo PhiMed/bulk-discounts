@@ -23,13 +23,12 @@ RSpec.describe 'admin dashboard show page' do
     create(:transaction, result: 'success', invoice: invoice5)
 
     @completed_invoice = create(:invoice)
-    @incomplete_invoice_1 = create(:invoice, created_at: '09/11/2021')
-    @incomplete_invoice_2 = create(:invoice, created_at: '10/11/2021')
+    @incomplete_invoice_1 = create(:invoice, created_at: '09/11/2001')
+    @incomplete_invoice_2 = create(:invoice, created_at: '10/11/2001')
 
     invoice_item1 = create(:invoice_item, invoice: @completed_invoice, status: 2)
     invoice_item2 = create(:invoice_item, invoice: @incomplete_invoice_1, status: 0)
     invoice_item2 = create(:invoice_item, invoice: @incomplete_invoice_2, status: 1)
-
 
     visit "/admin/"
   end
@@ -71,8 +70,6 @@ RSpec.describe 'admin dashboard show page' do
   end
 
   it 'orders incomplete_invoices oldest first and shows the date' do
-    save_and_open_page
-    expect('Tuesday').to appear_before('Wednesday')
-    expect(page).to have_content('day')
+    expect('Friday').to appear_before('Saturday')
   end
 end
