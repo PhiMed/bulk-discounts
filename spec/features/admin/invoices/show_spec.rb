@@ -48,10 +48,12 @@ RSpec.describe "admin invoice show page" do
 
     visit "/admin/invoices/#{@invoice.id}"
 
-    expect(page).to have_content('Status: cancelled')
-    expect(page).to have_content('cancelled completed in progress')
-    expect(page).not_to have_content('Status: in progress')
-    select('in progress', from: :change_status)
-    expect(page).to have_content('Status: in progress')
+    within('#change_status_section') do
+      expect(page).to have_content('Status: cancelled')
+      expect(page).to have_content('cancelled completed in progress')
+      expect(page).not_to have_content('Status: in progress')
+      select('in progress', from: 'status')
+      expect(page).to have_select('status', selected: 'in progress')
+    end
   end
 end
