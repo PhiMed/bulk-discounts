@@ -21,12 +21,6 @@ class Item < ApplicationRecord
   end
 
   def self.top_five_items
-    # joins(invoices: :transactions)
-    #   .where(transactions: {result: "success"})
-    #   .group(:id).select("items.*, SUM(invoice_items.unit_price * invoice_items.quantity) AS total_revenue")
-    #   .order("total_revenue" => :desc)
-    #   .limit(5)
-
     joins(invoices: :transactions)
       .where(transactions: {result: "success"})
       .group(:id)
@@ -34,8 +28,6 @@ class Item < ApplicationRecord
       .order("total_revenue" => :desc)
       .first(5)
   end
-
-  # think about responsibilities/etc, invoice items should be handling this logic
 
   def invoice_item_price(invoice)
     invoice_items.invoice_item_price(invoice)
