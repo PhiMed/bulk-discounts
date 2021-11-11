@@ -126,4 +126,22 @@ RSpec.describe Merchant, type: :model do
       expect(Merchant.top_five).to eq([merchant4, merchant3, merchant6, merchant1, merchant2])
     end
   end
+
+  describe '#best_day' do
+    it 'returns the best day' do
+      merchant = create(:merchant)
+      items1 = create_list(:item, 2, merchant: merchant)
+      item3 = create(:item, merchant: merchant)
+      invoices_1 = create_list(:invoice, 2, customer: @customer1, created_at: "2012-03-25 09:54:09 UTC")
+      items1.zip(invoices_1) do |item, invoice|
+        create(:invoice_item, quantity: 1, unit_price: 300, item: item, invoice: invoice)
+      end
+      invoice_3 = create(:invoice, customer: @customer1, created_at: "2012-03-10 09:54:09 UTC")
+      create(:invoice_item, quantity: 1, unit_price: 1000, item: item3, invoice: invoice_3)
+      Invoice.all.each do |invoice|
+        create(:transaction, result: 'success', invoice: invoice)
+      end
+      expect(merchant.best_day).to eq("2012-03-10 09:54:09 UTC")
+    end
+  end
 end
