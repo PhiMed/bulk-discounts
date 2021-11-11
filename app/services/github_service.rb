@@ -11,7 +11,10 @@ class GithubService
   end
 
   def self.merged_pr_count
-    parse_response("/search/issues?q=repo:yosoynatebrown/little-esty-shop%20type:pr%20is:merged")[:total_count]
+    content = conn.get("/search/issues?q=repo:yosoynatebrown/little-esty-shop%20type:pr%20is:merged")
+    body = parse_response(content)
+
+    body[:total_count]
   end
 
   def self.repo_name
