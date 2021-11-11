@@ -1,29 +1,28 @@
 class GithubService
 
-  def contributors
+  def self.contributors
     users = Hash.new
-    body = get_url("/repos/yosoynatebrown/little-esty-shop/contributors?page=2?access_token=fff")
-    
+    content = conn.get("/repos/yosoynatebrown/little-esty-shop/contributors?page=2?access_token=fff")
+    body = parse_response(content)
+    body.each do |user|
+      users[user[:login]] = user[:contributions]
+    end
+    users
   end
 
-  def usernames
-    get_url("/repos/yosoynatebrown/little-esty-shop/contributors?page=2?access_token=fff")
+  def self.merged_pr_count
+    parse_response("/search/issues?q=repo:yosoynatebrown/little-esty-shop%20type:pr%20is:merged")[:total_count]
   end
 
-  def commits
-    get_url("/repos/yosoynatebrown/little-esty-shop/contributors?page=2?access_token=fff")
+  def self.repo_name
+    parse_response("/repos/yosoynatebrown/little-esty-shop")[:name]
   end
 
-  def merged_pr_count
-    get_url("/search/issues?q=repo:yosoynatebrown/little-esty-shop%20type:pr%20is:merged")[:total_count]
+  def self.parse_response(response)
+    JSON.parse(response.body, symbolize_names: true)
   end
 
-  def repo_name
-    get_url("/repos/yosoynatebrown/little-esty-shop")[:name]
-  end
-
-  def get_url(url)
-    response = Faraday.get("https://api.github.com#{url}")
-    parsed = JSON.parse(response.body, symbolize_names: true)
+  def self.conn
+    Faraday.new(url: "https://api.github.com")
   end
 end
