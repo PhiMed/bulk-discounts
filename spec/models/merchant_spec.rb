@@ -9,12 +9,8 @@ RSpec.describe Merchant, type: :model do
   before(:each) do
     @merchant = create(:merchant)
 
-    @customer1 = create(:customer)
-    @customer2 = create(:customer)
-    @customer3 = create(:customer)
-    @customer4 = create(:customer)
-    @customer5 = create(:customer)
-    @customer6 = create(:customer)
+    @customer1, @customer2, @customer3 = create_list(:customer, 3)
+    @customer4, @customer5, @customer6 = create_list(:customer, 3)
 
     @invoice1 = create(:invoice, customer: @customer1)
     @invoice2 = create(:invoice, customer: @customer2)
@@ -30,12 +26,12 @@ RSpec.describe Merchant, type: :model do
     @item5 = create(:item, merchant: @merchant)
     @item6 = create(:item, merchant: @merchant)
 
-    create(:invoice_item, invoice: @invoice1, status:'packaged', item: @item1)
-    create(:invoice_item, invoice: @invoice2, status:'packaged',item: @item2)
-    create(:invoice_item, invoice: @invoice3, status:'packaged',item: @item3)
-    create(:invoice_item, invoice: @invoice4, status:'pending', item: @item4)
-    create(:invoice_item, invoice: @invoice5, status:'pending',item: @item5)
-    create(:invoice_item, invoice: @invoice6, status:'shipped', item: @item6)
+    create(:invoice_item, invoice: @invoice1, status:'packaged', item: @item1, quantity: 1, unit_price: 5)
+    create(:invoice_item, invoice: @invoice2, status:'packaged',item: @item2, quantity: 1, unit_price: 2)
+    create(:invoice_item, invoice: @invoice3, status:'packaged',item: @item3, quantity: 1, unit_price: 4)
+    create(:invoice_item, invoice: @invoice4, status:'pending', item: @item4, quantity: 1, unit_price: 6)
+    create(:invoice_item, invoice: @invoice5, status:'pending',item: @item5, quantity: 1, unit_price: 1)
+    create(:invoice_item, invoice: @invoice6, status:'shipped', item: @item6, quantity: 1, unit_price: 3)
 
     create(:transaction, result: 'success', invoice: @invoice1)
     create(:transaction, result: 'success', invoice: @invoice1)
@@ -48,7 +44,6 @@ RSpec.describe Merchant, type: :model do
     create(:transaction, result: 'success', invoice: @invoice5)
     create(:transaction, result: 'success', invoice: @invoice5)
   end
-
 
   describe '.enabled' do
     it 'returns a collection of enabled merchants' do
@@ -83,6 +78,52 @@ RSpec.describe Merchant, type: :model do
   describe '#invoices' do
     it "returns all invoices related to that merchant's items" do
       expect(@merchant.invoice_ids).to include(@invoice1.id, @invoice2.id, @invoice3.id)
+    end
+  end
+
+  describe '.top_five' do
+    it 'returns the top five merchants by revenue' do
+      merchant1, merchant2, merchant3 = create_list(:merchant, 3)
+      merchant4, merchant5, merchant6 = create_list(:merchant, 3)
+
+      items1 = create_list(:item, 3, merchant: merchant1)
+      items2 = create_list(:item, 3, merchant: merchant2)
+      items3 = create_list(:item, 3, merchant: merchant3)
+      items4 = create_list(:item, 3, merchant: merchant4)
+      items5 = create_list(:item, 3, merchant: merchant5)
+      items6 = create_list(:item, 3, merchant: merchant6)
+
+      invoices1 = create_list(:invoice, 3, customer: @customer1)
+      invoices2 = create_list(:invoice, 3, customer: @customer1)
+      invoices3 = create_list(:invoice, 3, customer: @customer1)
+      invoices4 = create_list(:invoice, 3, customer: @customer1)
+      invoices5 = create_list(:invoice, 3, customer: @customer1)
+      invoices6 = create_list(:invoice, 3, customer: @customer1)
+
+      items1.zip(invoices1) do |item, invoice|
+        create(:invoice_item, quantity: 1, unit_price: 300, item: item, invoice: invoice)
+      end
+      items2.zip(invoices2) do |item, invoice|
+        create(:invoice_item, quantity: 1, unit_price: 200, item: item, invoice: invoice)
+      end
+      items3.zip(invoices3) do |item, invoice|
+        create(:invoice_item, quantity: 1, unit_price: 500, item: item, invoice: invoice)
+      end
+      items4.zip(invoices4) do |item, invoice|
+        create(:invoice_item, quantity: 1, unit_price: 600, item: item, invoice: invoice)
+      end
+      items5.zip(invoices5) do |item, invoice|
+        create(:invoice_item, quantity: 1, unit_price: 100, item: item, invoice: invoice)
+      end
+      items6.zip(invoices6) do |item, invoice|
+        create(:invoice_item, quantity: 1, unit_price: 400, item: item, invoice: invoice)
+      end
+
+      Invoice.all.each do |invoice|
+        create(:transaction, result: 'success', invoice: invoice)
+      end
+
+      expect(Merchant.top_five).to eq([merchant4, merchant3, merchant6, merchant1, merchant2])
     end
   end
 end
