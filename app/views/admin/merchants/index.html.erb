@@ -1,18 +1,16 @@
 <h1>Merchants</h1>
 
-
 <h3>Top five highest revenue merchants</h3>
 <ol id="top_five_merchants">
   <% @merchants.top_five.each do |merchant| %>
     <li><%= link_to "#{merchant.name}", "/admin/merchants/#{merchant.id}" %>
       <ul>
         <li>Total Revenue: <%= number_to_currency(merchant.total_revenue/100.0) %></li>
+        <li>Top selling date for this merchant was: <%= merchant.best_day.strftime("%A, %B %d, %Y")  %></li>
       </ul>
     </li>
   <% end %>
 </ol>
-
-
 
 <h3>Enabled Merchants</h3>
 <ul id="enabled-merchants">

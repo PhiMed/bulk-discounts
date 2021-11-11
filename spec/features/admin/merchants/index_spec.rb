@@ -113,4 +113,27 @@ RSpec.describe 'admin merchants index' do
       expect(page).to have_content("$#{top_merchants[4].total_revenue/100.0}0")
     end
   end
+
+  it 'shows the top five merchants best day' do
+    customer = create(:customer)
+    merchant = create(:merchant)
+    items1 = create_list(:item, 2, merchant: merchant)
+    item3 = create(:item, merchant: merchant)
+    invoices_1 = create_list(:invoice, 2, customer: customer, created_at: "2012-03-25 09:54:09 UTC")
+    items1.zip(invoices_1) do |item, invoice|
+      create(:invoice_item, quantity: 1, unit_price: 300, item: item, invoice: invoice)
+    end
+    invoice_3 = create(:invoice, customer: customer, created_at: "2012-03-10 09:54:09 UTC")
+    create(:invoice_item, quantity: 1, unit_price: 1000, item: item3, invoice: invoice_3)
+    invoice_4 = create(:invoice, customer: customer, created_at: "2012-03-11 09:54:09 UTC")
+    create(:invoice_item, quantity: 1, unit_price: 1000, item: item3, invoice: invoice_4)
+    Invoice.all.each do |invoice|
+      create(:transaction, result: 'success', invoice: invoice)
+    end
+
+    visit admin_merchants_path
+    within("#top_five_merchants") do
+      expect(page).to have_content("Top selling date for this merchant was: Sunday, March 11, 2012")
+    end
+  end
 end
