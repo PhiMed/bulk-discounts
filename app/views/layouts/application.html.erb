@@ -11,8 +11,17 @@
 
   <body>
 
-    <h1>Little Esty Shop</h1>
-
+    <h3>Little Esty Shop</h3>
+    <p>GitHub Stats</p>
+    <p>Repo name: <%= GithubService.repo_name %></p>
+    <p>Total PR Count: <%= GithubService.merged_pr_count %></p>
+    <p>Individual contributors:</p>
+    <ul>
+      <% GithubService.contributors.each do |login, commits| %>
+        <li>User: <%= login  %> Commits: <%= commits  %></li>
+      <% end %>
+    </ul>
+    <hr>
     <% flash.each do |type, msg| %>
           <div>
             <%= msg %>
