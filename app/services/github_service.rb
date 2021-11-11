@@ -18,7 +18,9 @@ class GithubService
   end
 
   def self.repo_name
-    parse_response("/repos/yosoynatebrown/little-esty-shop")[:name]
+    content = conn.get("/repos/yosoynatebrown/little-esty-shop")
+    body = parse_response(content)
+    body[:name]
   end
 
   def self.parse_response(response)
