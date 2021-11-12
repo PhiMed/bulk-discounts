@@ -1,6 +1,6 @@
-# Little Esty Shop
+# Bulk Discounts
 
-[Link to Page](https://quiet-sands-26565.herokuapp.com)
+[Link to Page](https://bulk-discounts-phimed.herokuapp.com/)
 
 ## Description
 
@@ -19,10 +19,9 @@ On the admin dashboard you see information about all invoices and custormers for
 ## Credits
 
 [Philip](https://github.com/PhiMed)
-[Alex](https://github.com/AlexMMcConnell)
-[Nate](https://github.com/yosoynatebrown)
-[Greg](https://github.com/GregoryJFischer)
+
 
 ## Schema
 
-![Schema](https://i.imgur.com/OFsq5Kc.png)
+
+![Screen Shot 2021-11-12 at 11 59 47 AM](https://user-images.githubusercontent.com/87627363/141520890-04b8c267-f716-4c3d-8c7d-9513eaec135c.png)
