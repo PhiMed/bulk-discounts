@@ -59,6 +59,13 @@ RSpec.describe 'Merchant Items Index' do
     expect(page).to have_content 'bob the skull'
   end
 
+  it 'shows an error flash message when nothing is entered' do 
+    visit "/merchants/#{@merchant.id}/items/new"
+
+    click_button
+    expect(page).to have_content("Item could not be created")
+  end
+
   it 'can enable/disable an item' do
     visit "/merchants/#{@merchant.id}/items"
 
