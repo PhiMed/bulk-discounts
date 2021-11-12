@@ -70,7 +70,6 @@ ActiveRecord::Schema.define(version: 2021_11_08_185837) do
     t.index ["invoice_id"], name: "index_transactions_on_invoice_id"
   end
 
-  add_foreign_key "contributors", "github_repos"
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "items"
   add_foreign_key "invoices", "customers"
