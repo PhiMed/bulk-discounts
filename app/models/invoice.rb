@@ -8,24 +8,19 @@ class Invoice < ApplicationRecord
                  "completed" => 1,
                  "in progress" => 2
                }
+  scope :incomplete_invoices, -> { joins(:invoice_items)
+                                  .where(invoice_items: {status: ['0','1']})
+                                  .group(:id)
+                                  .order(:created_at ) }
 
-  def self.incomplete_invoices
-    joins(:invoice_items)
-    .where(invoice_items: {status: ['0','1']})
-    .group(:id)
-    .order(:created_at )
-  end
+  scope :highest_date, -> { select("invoices.created_at")
+                            .order(created_at: :desc)
+                            .group(:created_at)
+                            .order("invoices.count DESC")
+                            .first
+                            .created_at }
 
   def invoice_revenue
     invoice_items.invoice_item_revenue
-  end
-
-  def self.highest_date
-    select("invoices.created_at")
-      .order(created_at: :desc)
-      .group(:created_at)
-      .order("invoices.count DESC")
-      .first
-      .created_at
   end
 end
