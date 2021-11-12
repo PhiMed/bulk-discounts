@@ -1,5 +1,7 @@
 # Little Esty Shop
 
+[Link to Page](https://quiet-sands-26565.herokuapp.com/merchants/1/items)
+
 ## Description
 
 Little Esty Shop is a webhosted application that emulates the workings of a typical web store.
