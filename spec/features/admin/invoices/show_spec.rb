@@ -45,7 +45,6 @@ RSpec.describe "admin invoice show page" do
   end
 
   it 'has a dropdown form to update the status' do
-
     visit "/admin/invoices/#{@invoice.id}"
 
     within('#change_status_section') do
@@ -54,6 +53,8 @@ RSpec.describe "admin invoice show page" do
       expect(page).not_to have_content('Status: in progress')
       select('in progress', from: 'status')
       expect(page).to have_select('status', selected: 'in progress')
+      click_button "Submit"
+      expect(page).to have_content('Status: in progress')
     end
   end
 end
