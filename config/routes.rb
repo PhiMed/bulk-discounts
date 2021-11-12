@@ -15,13 +15,18 @@ Rails.application.routes.draw do
   get '/merchants/:id/invoices', to: 'merchant_invoices#index'
   get '/merchants/:id/invoices/:inv_id', to: 'merchant_invoices#show'
 
+  get '/merchants/:id/bulk_discounts', to: 'merchant_bulk_discounts#index'
+  get '/merchants/:id/bulk_discounts/:bulk_discount_id', to: 'merchant_bulk_discounts#show'
+
   resources :invoice_items, only: [:update]
+
+
 
   namespace :admin do
     get '/', to: 'base#show' #route for admin dashboard
 
     resources :merchants, only: [:index, :show, :edit, :update, :new, :create]
-    
+
     get '/invoices', to: 'invoices#index'
     get '/invoices/:id', to: 'invoices#show'
     patch '/invoices/:id', to: 'invoices#update'
