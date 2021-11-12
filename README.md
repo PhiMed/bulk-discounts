@@ -1,6 +1,6 @@
 # Little Esty Shop
 
-[Link to Page](https://quiet-sands-26565.herokuapp.com/merchants/1/items)
+[Link to Page](https://quiet-sands-26565.herokuapp.com)
 
 ## Description
 
