@@ -5,7 +5,7 @@ RSpec.describe 'bulk_discount new page' do
     @merchant = create(:merchant)
   end
 
-  it 'can create a new item' do
+  it 'can create a new bulk_discount' do
     visit "/merchants/#{@merchant.id}/bulk_discounts/new"
 
     fill_in 'percentage_discount', with: '19'
