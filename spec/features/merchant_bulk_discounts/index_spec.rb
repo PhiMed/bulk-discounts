@@ -40,4 +40,13 @@ RSpec.describe 'merchant bulk discount index' do
     expect(page).to have_content("2021-12-31 New Year's Day")
     expect(page).not_to have_content("2022-01-17 Martin Luther King, Jr. Day")
   end
+
+  it 'can create a new discount' do
+    @discount_1 =  create(:bulk_discount, merchant: @merchant, percentage_discount: 10, quantity_threshold: 9)
+    @discount_2 =  create(:bulk_discount, merchant: @merchant, percentage_discount: 20, quantity_threshold: 5)
+
+    visit "/merchants/#{@merchant.id}/bulk_discounts"
+
+    expect(page).to have_link("Create New Discount")
+  end
 end

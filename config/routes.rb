@@ -20,8 +20,6 @@ Rails.application.routes.draw do
 
   resources :invoice_items, only: [:update]
 
-
-
   namespace :admin do
     get '/', to: 'base#show' #route for admin dashboard
 
