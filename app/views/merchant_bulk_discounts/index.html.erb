@@ -6,6 +6,12 @@
   <%= holiday.name %>
   <br>
 <% end %>
+<br>
+<div id="new-discount">
+<%= link_to "Create New Discount", "/merchants/#{@merchant.id}/bulk_discounts/new" %>
+</div>
+
+
 <% @merchant.bulk_discounts.each do |bulk_discount| %>
 <div id="discount-<%= bulk_discount.id %>">
 <h3>Bulk Discount # <%= bulk_discount.id %></h3>
