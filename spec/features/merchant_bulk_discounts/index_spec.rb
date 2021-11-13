@@ -6,7 +6,7 @@ RSpec.describe 'merchant bulk discount index' do
     @merchant = create(:merchant)
   end
 
-  it 'should have a link to view this merchants discounts' do
+  it 'displays this merchants discounts' do
     @discount_1 =  create(:bulk_discount, merchant: @merchant, percentage_discount: 10, quantity_threshold: 9)
     @discount_2 =  create(:bulk_discount, merchant: @merchant, percentage_discount: 20, quantity_threshold: 5)
     @other_merchant = create(:merchant)
@@ -26,6 +26,18 @@ RSpec.describe 'merchant bulk discount index' do
 
       expect(current_path).to eq("/merchants/#{@merchant.id}/bulk_discounts/#{@discount_1.id}")
     end
+  end
 
+  it 'displays the upcoming holidays' do
+    @discount_1 =  create(:bulk_discount, merchant: @merchant, percentage_discount: 10, quantity_threshold: 9)
+    @discount_2 =  create(:bulk_discount, merchant: @merchant, percentage_discount: 20, quantity_threshold: 5)
+
+    visit "/merchants/#{@merchant.id}/bulk_discounts"
+
+    expect(page).to have_content("Upcoming Holidays")
+    expect(page).to have_content("2021-11-25 Thanksgiving Day")
+    expect(page).to have_content("2021-12-24 Christmas Day")
+    expect(page).to have_content("2021-12-31 New Year's Day")
+    expect(page).not_to have_content("2022-01-17 Martin Luther King, Jr. Day")
   end
 end
