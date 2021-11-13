@@ -6,13 +6,20 @@
   <%= holiday.name %>
   <br>
 <% end %>
-<% @merchant.bulk_discounts.each do |bulk_discount| %>
-<div id="discount-<%= bulk_discount.id %>">
-<h3>Bulk Discount # <%= bulk_discount.id %></h3>
-<%= link_to "View discount",
-  "/merchants/#{@merchant.id}/bulk_discounts/#{bulk_discount.id}" %>
+<br>
+<div id="new-discount">
+  <%= link_to "Create New Discount", "/merchants/#{@merchant.id}/bulk_discounts/new" %>
 </div>
-<p>Percentage Discount: <%= bulk_discount.percentage_discount %></p>
-<p>Quantity Threshold: <%= bulk_discount.quantity_threshold %></p>
 
+<% @merchant.bulk_discounts.each do |bulk_discount| %>
+  <div id="discount-<%= bulk_discount.id %>">
+    <h3>Bulk Discount # <%= bulk_discount.id %></h3>
+    <%= link_to "View discount",
+      "/merchants/#{@merchant.id}/bulk_discounts/#{bulk_discount.id}" %>
+    <p>Percentage Discount: <%= bulk_discount.percentage_discount %></p>
+    <p>Quantity Threshold: <%= bulk_discount.quantity_threshold %></p>
+    <%= form_with url: "/merchants/#{@merchant.id}/bulk_discounts/#{bulk_discount.id}", method: :delete, local: true do |f| %>
+      <%= f.submit "Delete this Bulk Discount" %>
+    <% end %>
+  </div>
 <% end %>
