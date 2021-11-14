@@ -36,17 +36,33 @@ RSpec.describe Invoice, type: :model do
   end
 
   describe 'instance methods' do
-    before :each do
-      @invoice = create(:invoice)
-
-      @invoice_item1 = create(:invoice_item, invoice: @invoice, unit_price: 1, quantity: 10)
-      @invoice_item2 = create(:invoice_item, invoice: @invoice, unit_price: 2, quantity: 10)
-    end
-
     describe '.invoice_revenue' do
       it 'returns the revenue of the invoices belonging to an invoice' do
-        expect(@invoice.invoice_revenue).to eq 30
+        invoice = create(:invoice)
+        invoice_item1 = create(:invoice_item, invoice: invoice, unit_price: 1, quantity: 10)
+        invoice_item2 = create(:invoice_item, invoice: invoice, unit_price: 2, quantity: 10)
+        expect(invoice.invoice_revenue).to eq 30
       end
+    end
+  end
+
+  describe '.discounted_invoice_revenue' do
+    it 'returns the revenue of the invoices belonging to an invoice' do
+      invoice = create(:invoice)
+      merchant = create(:merchant)
+      item_1 = create(:item, merchant: merchant)
+      item_2 = create(:item, merchant: merchant)
+      invoice_item1 = create(:invoice_item, invoice: invoice, item: item_1, unit_price: 1, quantity: 10)
+      invoice_item2 = create(:invoice_item, invoice: invoice, item: item_2, unit_price: 2, quantity: 10)
+      bulk_discount_1 = create(:bulk_discount,
+                              merchant: merchant,
+                              percentage_discount: 50,
+                              quantity_threshold: 2)
+      bulk_discount_2 = create(:bulk_discount,
+                              merchant: merchant,
+                              percentage_discount: 75,
+                              quantity_threshold: 11)
+      expect(invoice.discounted_invoice_revenue).to eq 15
     end
   end
 end

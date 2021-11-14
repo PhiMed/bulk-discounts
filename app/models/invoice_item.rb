@@ -10,7 +10,7 @@ class InvoiceItem < ApplicationRecord
                }
 
   scope :invoice_item_revenue, -> { sum("unit_price * quantity") }
-  
+
   def self.invoice_item_price(invoice)
     find_by(invoice: invoice).unit_price
   end
