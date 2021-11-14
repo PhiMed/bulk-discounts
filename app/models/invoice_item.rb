@@ -22,4 +22,13 @@ class InvoiceItem < ApplicationRecord
   def self.invoice_item_status(invoice)
     find_by(invoice: invoice).status
   end
+
+  def self.invoice_item_bulk_discount_applied(invoice)
+    BulkDiscount.all
+              .joins(merchant: {items: :invoice_items})
+              .where('invoice_id = ?', invoice.id)
+              .order(:percentage_discount)
+              .first
+              .id
+  end
 end
