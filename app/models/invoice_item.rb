@@ -29,6 +29,5 @@ class InvoiceItem < ApplicationRecord
               .where('invoice_id = ?', invoice.id)
               .order(:percentage_discount)
               .first
-              .id
   end
 end

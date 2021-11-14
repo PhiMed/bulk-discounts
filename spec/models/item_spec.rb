@@ -82,6 +82,16 @@ RSpec.describe Item, type: :model do
       end
     end
 
+    describe '#invoice_item_bulk_discount_applied' do
+      it 'should return the bulk discount applied for an invoice' do
+        bulk_discount = create(:bulk_discount,
+                                merchant: @merchant,
+                                percentage_discount: 50,
+                                quantity_threshold: 2)
+        expect(@item1.invoice_item_bulk_discount_applied(@invoice)).to eq(bulk_discount)
+      end
+    end
+
     describe '#invoice_item' do
       it 'should give invoice item corresponding to the given item and invoice' do
         expect(@item1.invoice_item(@invoice).id).to eq(@invitem1.id)
