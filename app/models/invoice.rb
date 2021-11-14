@@ -31,6 +31,7 @@ class Invoice < ApplicationRecord
     top_discount_eligible_invoice_items = invoice_items.where('quantity > ?', threshold_of_top_discount)
     top_discount = top_discount_eligible_invoice_items.invoice_item_revenue * top_discount_rate
     discounted_revenue = invoice_revenue - top_discount
+    # require "pry"; binding.pry
     discounted_revenue
   end
 end

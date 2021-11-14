@@ -21,7 +21,7 @@ RSpec.describe 'show page' do
     @bulk_discount_2 = create(:bulk_discount,
                             merchant: @merchant,
                             percentage_discount: 75,
-                            quantity_threshold: 3)
+                            quantity_threshold: 11)
 
     visit "/merchants/#{@merchant.id}/invoices/#{@invoice.id}"
   end
@@ -64,5 +64,14 @@ RSpec.describe 'show page' do
 
   it 'shows total revenue for this invoice including discounts' do
     expect(page).to have_content("Discounted Total: $25.00")
+  end
+
+  it 'has a link to the bulk discount applied to each invoice item' do
+    expect(page).to have_link("Bulk Discount Applied: #{@bulk_discount_1.id}")
+    expect(page).not_to have_link("Bulk Discount Applied: #{@bulk_discount_2.id}")
+
+    click_link("Bulk Discount Applied: #{@bulk_discount_1.id}")
+
+    expect(current_path).to eq("/merchants/#{@merchant.id}/bulk_discounts/#{@bulk_discount_1.id}")
   end
 end
