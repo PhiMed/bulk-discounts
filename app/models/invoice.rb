@@ -34,4 +34,8 @@ class Invoice < ApplicationRecord
     # require "pry"; binding.pry
     discounted_revenue
   end
+
+  def discount_applied
+    BulkDiscount.all.joins(merchant: {items: :invoice_items}).where('invoice_id = ?', self.id).order(:percentage_discount).first
+  end
 end

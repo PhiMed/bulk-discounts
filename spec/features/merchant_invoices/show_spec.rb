@@ -67,11 +67,13 @@ RSpec.describe 'show page' do
   end
 
   it 'has a link to the bulk discount applied to each invoice item' do
-    expect(page).to have_link("Bulk Discount Applied: #{@bulk_discount_1.id}")
-    expect(page).not_to have_link("Bulk Discount Applied: #{@bulk_discount_2.id}")
+    within("#item-#{@invoice.items.last.id}") do
+      expect(page).to have_content("Bulk Discount Applied:")
+      expect(page).to have_link("#{@bulk_discount_1.id}")
+      expect(page).not_to have_link("#{@bulk_discount_2.id}")
 
-    click_link("Bulk Discount Applied: #{@bulk_discount_1.id}")
-
+      click_link("#{@bulk_discount_1.id}")
+    end
     expect(current_path).to eq("/merchants/#{@merchant.id}/bulk_discounts/#{@bulk_discount_1.id}")
   end
 end
