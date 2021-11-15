@@ -60,7 +60,7 @@ RSpec.describe Invoice, type: :model do
       expect(invoice.discounted_invoice_revenue).to eq 5
     end
 
-    xit 'which discount: example1' do
+    it 'which discount: example1' do
       invoice = create(:invoice)
       merchant = create(:merchant)
       item_1 = create(:item, merchant: merchant)
@@ -74,7 +74,7 @@ RSpec.describe Invoice, type: :model do
       expect(invoice.discounted_invoice_revenue).to eq 100
     end
 
-    xit 'which discount: example2' do
+    it 'which discount: example2' do
       invoice = create(:invoice)
       merchant = create(:merchant)
       item_1 = create(:item, merchant: merchant)
