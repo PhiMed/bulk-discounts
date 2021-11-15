@@ -36,17 +36,113 @@ RSpec.describe Invoice, type: :model do
   end
 
   describe 'instance methods' do
-    before :each do
-      @invoice = create(:invoice)
+    describe '.invoice_revenue' do
+      it 'returns the revenue' do
+        invoice = create(:invoice)
+        invoice_item1 = create(:invoice_item, invoice: invoice, unit_price: 1, quantity: 10)
+        invoice_item2 = create(:invoice_item, invoice: invoice, unit_price: 2, quantity: 10)
+        expect(invoice.invoice_revenue).to eq 30
+      end
+    end
+  end
 
-      @invoice_item1 = create(:invoice_item, invoice: @invoice, unit_price: 1, quantity: 10)
-      @invoice_item2 = create(:invoice_item, invoice: @invoice, unit_price: 2, quantity: 10)
+  describe '.discounted_invoice_revenue' do
+    it 'returns the discounted revenue' do
+      invoice = create(:invoice)
+      merchant = create(:merchant)
+      item_1 = create(:item, merchant: merchant)
+      invoice_item1 = create(:invoice_item, invoice: invoice, item: item_1, unit_price: 1, quantity: 10)
+      bulk_discount_1 = create(:bulk_discount,
+                              merchant: merchant,
+                              percentage_discount: 50,
+                              quantity_threshold: 9)
+
+      expect(invoice.discounted_invoice_revenue).to eq 5
     end
 
-    describe '.invoice_revenue' do
-      it 'returns the revenue of the invoices belonging to an invoice' do
-        expect(@invoice.invoice_revenue).to eq 30
-      end
+    it 'which discount: example1' do
+      invoice = create(:invoice)
+      merchant = create(:merchant)
+      item_1 = create(:item, merchant: merchant)
+      item_2 = create(:item, merchant: merchant)
+      invoice_item1 = create(:invoice_item, invoice: invoice, item: item_1, unit_price: 10, quantity: 5)
+      invoice_item2 = create(:invoice_item, invoice: invoice, item: item_2, unit_price: 10, quantity: 5)
+      bulk_discount_1 = create(:bulk_discount,
+                              merchant: merchant,
+                              percentage_discount: 20,
+                              quantity_threshold: 10)
+      expect(invoice.discounted_invoice_revenue).to eq 100
+    end
+
+    it 'which discount: example2' do
+      invoice = create(:invoice)
+      merchant = create(:merchant)
+      item_1 = create(:item, merchant: merchant)
+      item_2 = create(:item, merchant: merchant)
+      invoice_item1 = create(:invoice_item, invoice: invoice, item: item_1, unit_price: 10, quantity: 10)
+      invoice_item2 = create(:invoice_item, invoice: invoice, item: item_2, unit_price: 10, quantity: 5)
+      bulk_discount_1 = create(:bulk_discount,
+                              merchant: merchant,
+                              percentage_discount: 20,
+                              quantity_threshold: 10)
+      expect(invoice.discounted_invoice_revenue).to eq 130
+    end
+
+    xit 'which discount: example3' do
+      invoice = create(:invoice)
+      merchant = create(:merchant)
+      item_a = create(:item, merchant: merchant)
+      item_b = create(:item, merchant: merchant)
+      invoice_item_a = create(:invoice_item, invoice: invoice, item: item_a, unit_price: 10, quantity: 12)
+      invoice_item_b = create(:invoice_item, invoice: invoice, item: item_b, unit_price: 10, quantity: 15)
+      bulk_discount_a = create(:bulk_discount,
+                              merchant: merchant,
+                              percentage_discount: 20,
+                              quantity_threshold: 10)
+      bulk_discount_b = create(:bulk_discount,
+                              merchant: merchant,
+                              percentage_discount: 30,
+                              quantity_threshold: 15)
+      expect(invoice.discounted_invoice_revenue).to eq 201
+    end
+
+    xit 'which discount: example4' do
+      invoice = create(:invoice)
+      merchant = create(:merchant)
+      item_a = create(:item, merchant: merchant)
+      item_b = create(:item, merchant: merchant)
+      invoice_item_a = create(:invoice_item, invoice: invoice, item: item_a, unit_price: 10, quantity: 12)
+      invoice_item_b = create(:invoice_item, invoice: invoice, item: item_b, unit_price: 10, quantity: 15)
+      bulk_discount_a = create(:bulk_discount,
+                              merchant: merchant,
+                              percentage_discount: 20,
+                              quantity_threshold: 10)
+      bulk_discount_b = create(:bulk_discount,
+                              merchant: merchant,
+                              percentage_discount: 15,
+                              quantity_threshold: 15)
+      expect(invoice.discounted_invoice_revenue).to eq 216
+    end
+
+    xit 'which discount: example5' do
+      invoice = create(:invoice)
+      merchant_1 = create(:merchant)
+      merchant_2 = create(:merchant)
+      item_a1 = create(:item, merchant: merchant_1)
+      item_a2 = create(:item, merchant: merchant_1)
+      item_b = create(:item, merchant: merchant_2)
+      invoice_item_a1 = create(:invoice_item, invoice: invoice, item: item_a1, unit_price: 10, quantity: 12)
+      invoice_item_a2 = create(:invoice_item, invoice: invoice, item: item_a2, unit_price: 10, quantity: 15)
+      invoice_item_b = create(:invoice_item, invoice: invoice, item: item_b, unit_price: 10, quantity: 15)
+      bulk_discount_a = create(:bulk_discount,
+                              merchant: merchant_1,
+                              percentage_discount: 20,
+                              quantity_threshold: 10)
+      bulk_discount_b = create(:bulk_discount,
+                              merchant: merchant_2,
+                              percentage_discount: 30,
+                              quantity_threshold: 15)
+      expect(invoice.discounted_invoice_revenue).to eq 351
     end
   end
 end

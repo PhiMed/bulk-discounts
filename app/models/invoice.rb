@@ -23,4 +23,47 @@ class Invoice < ApplicationRecord
   def invoice_revenue
     invoice_items.invoice_item_revenue
   end
+
+  def discounted_invoice_revenue
+    bulk_discounts_for_this_invoice = (
+                    BulkDiscount.all
+                     .joins(merchant: {items: :invoice_items})
+                     .where('invoice_id = ?', self.id)
+                     .order(:percentage_discount)
+                     .select('bulk_discounts.*'))
+
+    item_discount_hash = {}
+
+    invoice_items.each do |invoice_item|
+      bulk_discounts_for_this_invoice.each do |bulk_discount|
+        best_discount = []
+        if bulk_discount.quantity_threshold <= invoice_item.quantity
+          best_discount << bulk_discount
+        end
+        if best_discount[0] != nil
+          item_discount_hash[invoice_item.id] = {
+                     best_discount: best_discount[0].id,
+                     discounted_item_revenue:
+                       (invoice_item.quantity * invoice_item.unit_price *
+                       (100 - (best_discount[0].percentage_discount.to_f))/100),
+                     best_percentage: best_discount[0].percentage_discount}
+        else
+          item_discount_hash[invoice_item.id] = {
+                     best_discount: nil,
+                     discounted_item_revenue:
+                       (invoice_item.quantity * invoice_item.unit_price),
+                     best_percentage: nil}
+        end
+      end
+    end
+    if item_discount_hash.empty?
+      discounted_total = self.invoice_revenue
+    else
+      discounted_total = 0
+      item_discount_hash.values.each do |item|
+        discounted_total += item[:discounted_item_revenue]
+      end
+    end
+    discounted_total
+  end
 end

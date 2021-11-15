@@ -9,8 +9,19 @@ RSpec.describe 'show page' do
 
     @invoice = create(:invoice, customer: @customer)
     @item = create(:item, merchant: @merchant)
-    @inv_item = create(:invoice_item, invoice: @invoice, item: @item)
-
+    @inv_item = create(:invoice_item,
+                        invoice: @invoice,
+                        item: @item,
+                        unit_price: 500,
+                        quantity: 10)
+    @bulk_discount_1 = create(:bulk_discount,
+                            merchant: @merchant,
+                            percentage_discount: 50,
+                            quantity_threshold: 2)
+    @bulk_discount_2 = create(:bulk_discount,
+                            merchant: @merchant,
+                            percentage_discount: 75,
+                            quantity_threshold: 11)
 
     visit "/merchants/#{@merchant.id}/invoices/#{@invoice.id}"
   end
@@ -36,10 +47,6 @@ RSpec.describe 'show page' do
     expect(page).to have_content(@invoice.items.first.invoice_item_status(@invoice))
   end
 
-  it 'shows invoice total revenue' do
-    expect(page).to have_content("$")
-  end
-
   it 'shows dropdown for changing status' do
     expect(page).to have_content('packaged pending shipped')
     expect(page).to have_content('Change status')
@@ -49,5 +56,24 @@ RSpec.describe 'show page' do
       expect(page).to have_select('invoice_item_status', selected: 'shipped')
       expect(page).to have_content('shipped')
     end
+  end
+
+  it 'shows total revenue for this invoice not including discounts' do
+    expect(page).to have_content("Pre-Discount Total Revenue: $50.00")
+  end
+
+  it 'shows total revenue for this invoice including discounts' do
+    expect(page).to have_content("Discounted Total: $25.00")
+  end
+
+  it 'has a link to the bulk discount applied to each invoice item' do
+    within("#item-#{@invoice.items.last.id}") do
+      expect(page).to have_content("Bulk Discount Applied:")
+      expect(page).to have_link("#{@bulk_discount_1.id}")
+      expect(page).not_to have_link("#{@bulk_discount_2.id}")
+
+      click_link("#{@bulk_discount_1.id}")
+    end
+    expect(current_path).to eq("/merchants/#{@merchant.id}/bulk_discounts/#{@bulk_discount_1.id}")
   end
 end

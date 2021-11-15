@@ -23,6 +23,7 @@ RSpec.describe Item, type: :model do
     @invitem5 = create(:invoice_item, quantity: 10, unit_price: 5, invoice: @invoice, item: @item5)
     @invitem6 = create(:invoice_item, quantity: 10, unit_price: 6, invoice: @invoice, item: @item6)
   end
+
   describe 'relationships' do
     it {should belong_to :merchant}
     it {should have_many :invoice_items}
@@ -79,6 +80,16 @@ RSpec.describe Item, type: :model do
     describe '#invoice_item_status' do
       it 'should return the status of the invoice' do
         expect(@item1.invoice_item_status(@invoice)).to eq("packaged")
+      end
+    end
+
+    describe '#invoice_item_bulk_discount_applied' do
+      it 'should return the bulk discount applied for an invoice' do
+        bulk_discount = create(:bulk_discount,
+                                merchant: @merchant,
+                                percentage_discount: 50,
+                                quantity_threshold: 2)
+        expect(@item1.invoice_item_bulk_discount_applied(@invoice)).to eq(bulk_discount)
       end
     end
 

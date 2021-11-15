@@ -7,7 +7,7 @@ class Item < ApplicationRecord
   has_many :invoices, through: :invoice_items
 
   enum status: { "Disabled" => 0, "Enabled" => 1}
-  
+
   scope :enabled, -> { where(status: 1) }
   scope :disabled, -> { where(status: 0) }
   scope :top_five_items, -> { joins(invoices: :transactions)
@@ -21,7 +21,7 @@ class Item < ApplicationRecord
                                 .select("invoices.created_at AS invoice_created_at")
                                 .where(invoice_items: {status: '0'})
                                 .order(:invoice_created_at) }
-  
+
 
 
   def invoice_item(invoice)
@@ -40,4 +40,7 @@ class Item < ApplicationRecord
     invoice_items.invoice_item_status(invoice)
   end
 
+  def invoice_item_bulk_discount_applied(invoice)
+    invoice_items.invoice_item_bulk_discount_applied(invoice)
+  end
 end
