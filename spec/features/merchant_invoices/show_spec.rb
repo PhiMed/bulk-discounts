@@ -67,6 +67,7 @@ RSpec.describe 'show page' do
   end
 
   it 'has a link to the bulk discount applied to each invoice item' do
+    save_and_open_page
     within("#item-#{@invoice.items.last.id}") do
       expect(page).to have_content("Bulk Discount Applied:")
       expect(page).to have_link("#{@bulk_discount_1.id}")

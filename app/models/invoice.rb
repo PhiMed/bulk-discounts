@@ -24,18 +24,24 @@ class Invoice < ApplicationRecord
     invoice_items.invoice_item_revenue
   end
 
+  def bulk_discounts_for_this_invoice(merchant)
+     BulkDiscount.all
+     .joins(merchant: {items: :invoice_items})
+     .where('invoice_id = ?', self.id)
+     .order(:percentage_discount)
+     .select('bulk_discounts.*')
+  end
+
+  def merchants_invoice_items(merchant)
+    InvoiceItem.all
+    .joins(item: :merchant)
+    .where('merchant_id  = ?', merchant.id)
+    .where('invoice_id = ?', self.id)
+  end
+
   def item_discount_hash(merchant)
-    bulk_discounts_for_this_invoice = (
-                    BulkDiscount.all
-                     .joins(merchant: {items: :invoice_items})
-                     .where('invoice_id = ?', self.id)
-                     .order(:percentage_discount)
-                     .select('bulk_discounts.*'))
-    merchants_invoice_items = (
-                    InvoiceItem.all
-                               .joins(item: :merchant)
-                               .where('merchant_id  = ?', merchant.id)
-                               .where('invoice_id = ?', self.id))
+    bulk_discounts_for_this_invoice = bulk_discounts_for_this_invoice(merchant)
+    merchants_invoice_items = merchants_invoice_items(merchant)
     item_discount_hash = {}
     merchants_invoice_items.each do |invoice_item|
       eligible_discounts = []
