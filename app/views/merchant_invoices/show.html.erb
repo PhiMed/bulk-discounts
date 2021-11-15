@@ -4,7 +4,7 @@
 <p>Status: <%= @invoice.status %></p>
 <p>Created On: <%= @invoice.created_at.strftime("%A, %B %d, %Y") %></p>
 <p>Pre-Discount Total Revenue: <%= number_to_currency(@invoice.invoice_revenue/100.0)%></p>
-<p>Discounted Total: <%= number_to_currency(@invoice.discounted_invoice_revenue/100.0)%></p>
+<p>Discounted Total: <%= number_to_currency(@invoice.discounted_invoice_revenue(@merchant)/100.0)%></p>
 <p>Customer: <%= "#{@invoice.customer.first_name} #{@invoice.customer.last_name}" %></p>
 
 <h2>Items on this Invoice:</h2>

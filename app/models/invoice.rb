@@ -24,7 +24,7 @@ class Invoice < ApplicationRecord
     invoice_items.invoice_item_revenue
   end
 
-  def discounted_invoice_revenue
+  def discounted_invoice_revenue(merchant)
     bulk_discounts_for_this_invoice = (
                     BulkDiscount.all
                      .joins(merchant: {items: :invoice_items})
@@ -32,21 +32,24 @@ class Invoice < ApplicationRecord
                      .order(:percentage_discount)
                      .select('bulk_discounts.*'))
 
+    merchants_invoice_items = InvoiceItem.all.joins(item: :merchant).where('merchant_id  = ?', merchant.id).where('invoice_id = ?', self.id)
+
     item_discount_hash = {}
 
-    invoice_items.each do |invoice_item|
+    merchants_invoice_items.each do |invoice_item|
+      eligible_discounts = []
       bulk_discounts_for_this_invoice.each do |bulk_discount|
-        best_discount = []
         if bulk_discount.quantity_threshold <= invoice_item.quantity
-          best_discount << bulk_discount
+          eligible_discounts << bulk_discount
         end
-        if best_discount[0] != nil
+        if eligible_discounts[0] != nil
+          best_discount = eligible_discounts.sort_by {|discount| discount.percentage_discount}.reverse[0]
           item_discount_hash[invoice_item.id] = {
-                     best_discount: best_discount[0].id,
+                     best_discount: best_discount.id,
                      discounted_item_revenue:
                        (invoice_item.quantity * invoice_item.unit_price *
-                       (100 - (best_discount[0].percentage_discount.to_f))/100),
-                     best_percentage: best_discount[0].percentage_discount}
+                       (100 - (best_discount.percentage_discount.to_f))/100),
+                     best_percentage: best_discount.percentage_discount}
         else
           item_discount_hash[invoice_item.id] = {
                      best_discount: nil,
@@ -56,6 +59,7 @@ class Invoice < ApplicationRecord
         end
       end
     end
+
     if item_discount_hash.empty?
       discounted_total = self.invoice_revenue
     else
