@@ -135,11 +135,11 @@ RSpec.describe Invoice, type: :model do
       invoice_item_a2 = create(:invoice_item, invoice: invoice, item: item_a2, unit_price: 10, quantity: 15)
       invoice_item_b = create(:invoice_item, invoice: invoice, item: item_b, unit_price: 10, quantity: 15)
       bulk_discount_a = create(:bulk_discount,
-                              merchant: merchant,
+                              merchant: merchant_1,
                               percentage_discount: 20,
                               quantity_threshold: 10)
       bulk_discount_b = create(:bulk_discount,
-                              merchant: merchant,
+                              merchant: merchant_2,
                               percentage_discount: 30,
                               quantity_threshold: 15)
       expect(invoice.discounted_invoice_revenue).to eq 351

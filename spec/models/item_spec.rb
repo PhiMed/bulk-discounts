@@ -23,6 +23,7 @@ RSpec.describe Item, type: :model do
     @invitem5 = create(:invoice_item, quantity: 10, unit_price: 5, invoice: @invoice, item: @item5)
     @invitem6 = create(:invoice_item, quantity: 10, unit_price: 6, invoice: @invoice, item: @item6)
   end
+
   describe 'relationships' do
     it {should belong_to :merchant}
     it {should have_many :invoice_items}
