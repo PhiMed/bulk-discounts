@@ -25,10 +25,13 @@ class Invoice < ApplicationRecord
   end
 
   def discounted_invoice_revenue
+    a = items.pluck(:merchant_id).uniq
+    b = items.select('merchants.id').joins(:merchant).group('merchants.id')
+    require "pry"; binding.pry
   end
 
   def merchant_invoice_revenue(merchant)
-
+    merchants_invoice_items(merchant).sum("invoice_items.quantity * invoice_items.unit_price")
   end
 
   def bulk_discounts_for_this_invoice(merchant)
@@ -40,10 +43,8 @@ class Invoice < ApplicationRecord
   end
 
   def merchants_invoice_items(merchant)
-    InvoiceItem.all
-    .joins(item: :merchant)
-    .where('merchant_id  = ?', merchant.id)
-    .where('invoice_id = ?', self.id)
+    invoice_items.joins(item: :merchant)
+                 .where('merchant_id  = ?', merchant.id)
   end
 
   def item_discount_hash(merchant)
