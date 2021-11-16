@@ -24,10 +24,18 @@ class InvoiceItem < ApplicationRecord
   end
 
   def self.invoice_item_bulk_discount_applied(invoice)
-    BulkDiscount.all
-              .joins(merchant: {items: :invoice_items})
-              .where('invoice_id = ?', invoice.id)
-              .order(:percentage_discount)
-              .first
+    merchant = (Item.find(self.find_by(invoice: invoice)
+                       .item_id)
+                       .merchant)
+    if invoice.item_discount_hash(merchant).values.any?
+      discount = invoice.item_discount_hash(merchant).values[0][:best_discount]
+    else
+      discount = nil
+    end
+    if discount != nil
+      BulkDiscount.find(discount)
+    else
+      nil
+    end
   end
 end

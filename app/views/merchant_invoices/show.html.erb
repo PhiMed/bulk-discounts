@@ -4,7 +4,7 @@
 <p>Status: <%= @invoice.status %></p>
 <p>Created On: <%= @invoice.created_at.strftime("%A, %B %d, %Y") %></p>
 <p>Pre-Discount Total Revenue: <%= number_to_currency(@invoice.invoice_revenue/100.0)%></p>
-<p>Discounted Total: <%= number_to_currency(@invoice.discounted_invoice_revenue(@merchant)/100.0)%></p>
+<p>Discounted Total: <%= number_to_currency(@invoice.discounted_merchant_invoice_revenue(@merchant)/100.0)%></p>
 <p>Customer: <%= "#{@invoice.customer.first_name} #{@invoice.customer.last_name}" %></p>
 
 <h2>Items on this Invoice:</h2>
@@ -14,8 +14,10 @@
         <p>Quantity: <%= item.invoice_item_quantity(@invoice) %></p>
         <p>Price: <%= number_to_currency(item.invoice_item_price(@invoice)/100.0) %></p>
         <p>Status: <%= item.invoice_item_status(@invoice) %></p>
-        <p>Bulk Discount Applied: <%= link_to "#{item.invoice_item_bulk_discount_applied(@invoice).id}",
-           "/merchants/#{@merchant.id}/bulk_discounts/#{item.invoice_item_bulk_discount_applied(@invoice).id}" %></p>
+        <% if item.invoice_item_bulk_discount_applied(@invoice) != nil %>
+          <p>Bulk Discount Applied: <%= link_to "#{item.invoice_item_bulk_discount_applied(@invoice).id}",
+             "/merchants/#{@merchant.id}/bulk_discounts/#{item.invoice_item_bulk_discount_applied(@invoice).id}" %></p>
+        <% end %>
         <%= form_for(item.invoice_item(@invoice)) do |f| %>
         <%= f.label :change_status %>
         <%= f.select(:status, options_for_select([['packaged', 'packaged'], ['pending', 'pending'], ['shipped', 'shipped']]), { include_blank: true }, onchange: 'this.form.submit()') %>
