@@ -1,5 +1,6 @@
-
 <h1>Merchant Invoice Show Page</h1>
+<%= link_to "Welcome Page", "/" %>
+<hr>
 <h2>Invoice #<%= @invoice.id %></h2>
 <p>Status: <%= @invoice.status %></p>
 <p>Created On: <%= @invoice.created_at.strftime("%A, %B %d, %Y") %></p>

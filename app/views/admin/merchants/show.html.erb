@@ -1,3 +1,10 @@
+<h1>Admin Merchants Show Page</h1>
+<%= link_to "Admin Merchants", admin_merchants_path %>
+<%= link_to "Admin Invoices", admin_invoices_path %>
+<%= link_to "Admin Dashboard", "/admin" %>
+<%= link_to "Welcome Page", "/" %>
+<hr>
+
 <h1><%= @merchant.name %></h1>
 
 <%= link_to "Update #{@merchant.name}", "#{@merchant.id}/edit"%>

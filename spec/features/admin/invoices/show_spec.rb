@@ -7,11 +7,18 @@ RSpec.describe "admin invoice show page" do
 
     @invoice = create(:invoice, customer: @customer, created_at: "2012-03-25 09:54:09 UTC", status: 0)
 
-    @item1 = create(:item)
+    @merchant = create(:merchant)
+
+    @item1 = create(:item, merchant: @merchant)
     @item2 = create(:item)
 
-    @invoice_item1 = create(:invoice_item, invoice: @invoice, item: @item1, quantity: 1, unit_price: 1000)
+    @invoice_item1 = create(:invoice_item, invoice: @invoice, item: @item1, quantity: 2, unit_price: 1000)
     @invoice_item2 = create(:invoice_item, invoice: @invoice, item: @item2, quantity: 10, unit_price: 200)
+
+    @bulk_discount_1 = create(:bulk_discount,
+                            merchant: @merchant,
+                            percentage_discount: 50,
+                            quantity_threshold: 2)
   end
 
   it 'show invoice information' do
@@ -41,7 +48,13 @@ RSpec.describe "admin invoice show page" do
   it 'displays the total revenue for the invoice' do
     visit "/admin/invoices/#{@invoice.id}"
 
-    expect(page).to have_content("Total Revenue: $30.00")
+    expect(page).to have_content("Total Revenue: $40.00")
+  end
+
+  it 'displays the discounted total revenue for the invoice' do
+    visit "/admin/invoices/#{@invoice.id}"
+
+    expect(page).to have_content("Total Discounted Revenue: $30.00")
   end
 
   it 'has a dropdown form to update the status' do

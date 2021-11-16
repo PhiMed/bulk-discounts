@@ -1,1 +1,12 @@
 <h1>Welcome page</h1>
+<%= link_to "Admin Merchants", admin_merchants_path %>
+<%= link_to "Admin Invoices", admin_invoices_path %>
+<%= link_to "Admin Dashboard", "/admin" %>
+<%= link_to "Welcome Page", "/" %>
+<hr>
+
+<%= form_with url: "/merchants", method: :get, local: true do |f| %>
+  <%= f.label :merchant_id %>
+  <%= f.number_field :id, required: true  %><br>
+  <%= f.submit %>
+<% end %>

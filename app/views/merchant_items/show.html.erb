@@ -1,4 +1,6 @@
 <h1>Merchant Items Show Page</h1>
+<%= link_to "Welcome Page", "/" %>
+<hr>
   <h3><%= @item.name %></h3><br>
 Description:  <%= @item.description %><br><br>
 Price:  <%= number_to_currency(@item.unit_price/100.0) %>
