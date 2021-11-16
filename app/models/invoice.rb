@@ -24,13 +24,13 @@ class Invoice < ApplicationRecord
     invoice_items.invoice_item_revenue
   end
 
+  def merchant_invoice_revenue(merchant)
+    merchants_invoice_items(merchant).sum("invoice_items.quantity * invoice_items.unit_price")
+  end
+
   def merchants_invoice_items(merchant)
     invoice_items.joins(item: :merchant)
                  .where('merchant_id  = ?', merchant.id)
-  end
-
-  def merchant_invoice_revenue(merchant)
-    merchants_invoice_items(merchant).sum("invoice_items.quantity * invoice_items.unit_price")
   end
 
   def bulk_discounts_for_this_invoice(merchant)
@@ -53,17 +53,13 @@ class Invoice < ApplicationRecord
         if eligible_discounts[0] != nil
           best_discount = eligible_discounts.sort_by {|discount| discount.percentage_discount}.reverse[0]
           item_discount_hash[invoice_item.id] = {
-            best_discount: best_discount.id,
-            discounted_item_revenue:
+            best_discount: best_discount.id, discounted_item_revenue:
               (invoice_item.quantity * invoice_item.unit_price *
-              (100 - (best_discount.percentage_discount.to_f))/100)
-                                                  }
+              (100 - (best_discount.percentage_discount.to_f))/100)}
         else
           item_discount_hash[invoice_item.id] = {
-            best_discount: nil,
-            discounted_item_revenue:
-             (invoice_item.quantity * invoice_item.unit_price)
-                                                  }
+            best_discount: nil, discounted_item_revenue:
+             (invoice_item.quantity * invoice_item.unit_price)}
         end
       end
     end
