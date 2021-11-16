@@ -24,26 +24,20 @@ class Invoice < ApplicationRecord
     invoice_items.invoice_item_revenue
   end
 
-  def discounted_invoice_revenue
-  end
-
   def merchant_invoice_revenue(merchant)
-
-  end
-
-  def bulk_discounts_for_this_invoice(merchant)
-     BulkDiscount.all
-     .joins(merchant: {items: :invoice_items})
-     .where('invoice_id = ?', self.id)
-     .order(:percentage_discount)
-     .select('bulk_discounts.*')
+    merchants_invoice_items(merchant).sum("invoice_items.quantity * invoice_items.unit_price")
   end
 
   def merchants_invoice_items(merchant)
-    InvoiceItem.all
-    .joins(item: :merchant)
-    .where('merchant_id  = ?', merchant.id)
-    .where('invoice_id = ?', self.id)
+    invoice_items.joins(item: :merchant)
+                 .where('merchant_id  = ?', merchant.id)
+  end
+
+  def bulk_discounts_for_this_invoice(merchant)
+    BulkDiscount.all
+                .joins(merchant: {items: :invoice_items})
+                .where('invoice_id = ?', self.id)
+                .where('merchants.id  = ?', merchant.id)
   end
 
   def item_discount_hash(merchant)
@@ -59,17 +53,13 @@ class Invoice < ApplicationRecord
         if eligible_discounts[0] != nil
           best_discount = eligible_discounts.sort_by {|discount| discount.percentage_discount}.reverse[0]
           item_discount_hash[invoice_item.id] = {
-                     best_discount: best_discount.id,
-                     discounted_item_revenue:
-                       (invoice_item.quantity * invoice_item.unit_price *
-                       (100 - (best_discount.percentage_discount.to_f))/100),
-                     best_percentage: best_discount.percentage_discount}
+            best_discount: best_discount.id, discounted_item_revenue:
+              (invoice_item.quantity * invoice_item.unit_price *
+              (100 - (best_discount.percentage_discount.to_f))/100)}
         else
           item_discount_hash[invoice_item.id] = {
-                     best_discount: nil,
-                     discounted_item_revenue:
-                       (invoice_item.quantity * invoice_item.unit_price),
-                     best_percentage: nil}
+            best_discount: nil, discounted_item_revenue:
+             (invoice_item.quantity * invoice_item.unit_price)}
         end
       end
     end
@@ -79,12 +69,21 @@ class Invoice < ApplicationRecord
   def discounted_merchant_invoice_revenue(merchant)
     hash = item_discount_hash(merchant)
     if hash.empty?
-      discounted_total = self.invoice_revenue
+      discounted_total = merchant_invoice_revenue(merchant)
     else
       discounted_total = 0
       hash.values.each do |item|
         discounted_total += item[:discounted_item_revenue]
       end
+    end
+    discounted_total
+  end
+
+  def discounted_invoice_revenue
+    merchants = Merchant.where(:id => items.pluck(:merchant_id).uniq)
+    discounted_total = 0
+    merchants.each do |m|
+      discounted_total += discounted_merchant_invoice_revenue(m)
     end
     discounted_total
   end

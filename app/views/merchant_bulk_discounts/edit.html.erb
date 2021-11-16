@@ -1,4 +1,6 @@
 <h1>Edit Bulk Discount</h1>
+<%= link_to "Welcome Page", "/" %>
+<hr>
 
 <%= form_with url: "/merchants/#{@merchant.id}/bulk_discounts/#{@bulk_discount.id}", method: :patch, local: true do |f| %>
   <%= f.label :percentage_discount %>

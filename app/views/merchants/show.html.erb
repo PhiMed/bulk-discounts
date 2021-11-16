@@ -1,4 +1,7 @@
-<h1>Merchant Name: <%= @merchant.name %></h1>
+<h1>Merchant Dashboard </h1>
+<%= link_to "Welcome Page", "/" %>
+<hr>
+<h2>Merchant Name: <%= @merchant.name %></h2>
 
 <h3><a href="/merchants/<%= @merchant.id %>/items">My Items</a></h3>
 <h3><a href="/merchants/<%= @merchant.id %>/invoices">My Invoices</a></h3>

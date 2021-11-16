@@ -1,4 +1,6 @@
-<h1>My Invoices</h1>
+<h1>Merchant Invoices</h1>
+<%= link_to "Welcome Page", "/" %>
+<hr>
 <% @merchant.invoice_ids.each do |id| %>
   <p><a href="<%="/merchants/#{@merchant.id}/invoices/#{id}"%>">Invoice #<%= id %></a></p>
 <% end %>

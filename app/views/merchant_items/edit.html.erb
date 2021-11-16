@@ -1,4 +1,6 @@
 <h1>Edit Item</h1>
+<%= link_to "Welcome Page", "/" %>
+<hr>
 <%= form_with url: "/merchants/#{@item.merchant_id}/items/#{@item.id}", method: :patch, local: true do |f| %>
   <%= f.label :name %>
   <%= f.text_field :name, value: @item.name, required: true  %><br>

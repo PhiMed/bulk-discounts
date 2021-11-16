@@ -1,3 +1,10 @@
+<h1>Admin Invoice Show Page</h1>
+<%= link_to "Merchants", admin_merchants_path %>
+<%= link_to "Invoices", admin_invoices_path %>
+<%= link_to "Admin Dashboard", "/admin" %>
+<%= link_to "Welcome Page", "/" %>
+<hr>
+
 <h3>Invoice #<%= @invoice.id %></h3>
 <div id="change_status_section">
 <p>Status: <%= @invoice.status %>
@@ -10,6 +17,7 @@
 <p>Customer Name: <%= @invoice.customer.first_name + " " + @invoice.customer.last_name %></p>
 <p>Created On: <%= @invoice.created_at.strftime("%A, %B %d, %Y") %></p>
 <p>Total Revenue: <%= number_to_currency(@invoice.invoice_revenue/100.0) %>
+<p>Total Discounted Revenue: <%= number_to_currency(@invoice.discounted_invoice_revenue/100.0) %>
 
 <h4>Items:</h4>
 <ul>

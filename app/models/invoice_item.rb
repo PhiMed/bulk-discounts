@@ -25,10 +25,11 @@ class InvoiceItem < ApplicationRecord
 
   def self.invoice_item_bulk_discount_applied(invoice)
     merchant = (Item.find(self.find_by(invoice: invoice)
-                       .item_id)
-                       .merchant)
+                    .item_id)
+                    .merchant)
     if invoice.item_discount_hash(merchant).values.any?
-      discount = invoice.item_discount_hash(merchant).values[0][:best_discount]
+      discount = invoice.item_discount_hash(merchant)
+                        .values[0][:best_discount]
     else
       discount = nil
     end
