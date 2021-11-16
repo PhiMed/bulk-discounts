@@ -7,9 +7,10 @@ describe HolidayService do
   end
 
   it 'next_three_holidays' do
-    holiday_service = HolidayService.new
-    expect(holiday_service.next_three_holidays.first.name).to eq("Thanksgiving Day")
-    expect(holiday_service.next_three_holidays.second.name).to eq("Christmas Day")
-    expect(holiday_service.next_three_holidays.third.name).to eq("New Year's Day")
+    holiday_service = HolidayService.next_three_holidays
+
+    expect(holiday_service.first.name).to eq("Thanksgiving Day")
+    expect(holiday_service.second.name).to eq("Christmas Day")
+    expect(holiday_service.third.name).to eq("New Year's Day")
   end
 end
