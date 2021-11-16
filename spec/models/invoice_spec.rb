@@ -37,17 +37,69 @@ RSpec.describe Invoice, type: :model do
 
   describe 'instance methods' do
     describe '.invoice_revenue' do
-      it 'returns the revenue' do
+      it 'returns the total invoice revenue(admin)' do
         invoice = create(:invoice)
-        invoice_item1 = create(:invoice_item, invoice: invoice, unit_price: 1, quantity: 10)
-        invoice_item2 = create(:invoice_item, invoice: invoice, unit_price: 2, quantity: 10)
-        expect(invoice.invoice_revenue).to eq 30
+        merchant_1 = create(:merchant)
+        merchant_2 = create(:merchant)
+        item_1 = create(:item, merchant: merchant_1)
+        item_2 = create(:item, merchant: merchant_1)
+        item_3 = create(:item, merchant: merchant_2)
+        item_4 = create(:item, merchant: merchant_2)
+        invoice_item_1 = create(:invoice_item, invoice: invoice, item: item_1, unit_price: 10, quantity: 1)
+        invoice_item_2 = create(:invoice_item, invoice: invoice, item: item_2, unit_price: 10, quantity: 1)
+        invoice_item_3 = create(:invoice_item, invoice: invoice, item: item_3, unit_price: 10, quantity: 1)
+        invoice_item_4 = create(:invoice_item, invoice: invoice, item: item_4, unit_price: 10, quantity: 1)
+        expect(invoice.invoice_revenue).to eq 40
       end
     end
   end
 
   describe '.discounted_invoice_revenue' do
-    it 'returns the discounted revenue' do
+    it 'returns the total discounted revenue(admin)' do
+      invoice = create(:invoice)
+      merchant_1 = create(:merchant)
+      merchant_2 = create(:merchant)
+      item_1 = create(:item, merchant: merchant_1)
+      item_2 = create(:item, merchant: merchant_1)
+      item_3 = create(:item, merchant: merchant_2)
+      item_4 = create(:item, merchant: merchant_2)
+      invoice_item_1 = create(:invoice_item, invoice: invoice, item: item_1, unit_price: 10, quantity: 5)
+      invoice_item_2 = create(:invoice_item, invoice: invoice, item: item_2, unit_price: 10, quantity: 10)
+      invoice_item_3 = create(:invoice_item, invoice: invoice, item: item_3, unit_price: 10, quantity: 2)
+      invoice_item_4 = create(:invoice_item, invoice: invoice, item: item_4, unit_price: 10, quantity: 1)
+      bulk_discount_1 = create(:bulk_discount,
+                              merchant: merchant_1,
+                              percentage_discount: 50,
+                              quantity_threshold: 6)
+      bulk_discount_2 = create(:bulk_discount,
+                              merchant: merchant_2,
+                              percentage_discount: 10,
+                              quantity_threshold: 2)
+
+      expect(invoice.discounted_invoice_revenue).to eq 128
+    end
+
+    describe '.merchant_invoice_revenue' do
+      it 'returns the total invoice revenue for a merchant' do
+      invoice = create(:invoice)
+      merchant_1 = create(:merchant)
+      merchant_2 = create(:merchant)
+      item_1 = create(:item, merchant: merchant_1)
+      item_2 = create(:item, merchant: merchant_1)
+      item_3 = create(:item, merchant: merchant_2)
+      item_4 = create(:item, merchant: merchant_2)
+      invoice_item_1 = create(:invoice_item, invoice: invoice, item: item_1, unit_price: 10, quantity: 1)
+      invoice_item_2 = create(:invoice_item, invoice: invoice, item: item_2, unit_price: 10, quantity: 1)
+      invoice_item_3 = create(:invoice_item, invoice: invoice, item: item_3, unit_price: 100, quantity: 1)
+      invoice_item_4 = create(:invoice_item, invoice: invoice, item: item_4, unit_price: 100, quantity: 1)
+      expect(invoice.merchant_invoice_revenue(merchant_1)).to eq 30
+      expect(invoice.merchant_invoice_revenue(merchant_2)).to eq 200
+      end
+    end
+  end
+
+  describe '.discounted_merchant_invoice_revenue' do
+    it 'returns the discounted invoice revenue for a merchant' do
       invoice = create(:invoice)
       merchant = create(:merchant)
       item_1 = create(:item, merchant: merchant)
@@ -57,10 +109,10 @@ RSpec.describe Invoice, type: :model do
                               percentage_discount: 50,
                               quantity_threshold: 9)
 
-      expect(invoice.discounted_invoice_revenue(merchant)).to eq 5
+      expect(invoice.discounted_merchant_invoice_revenue(merchant)).to eq 5
     end
 
-    it 'which discount: example1' do
+    it 'example1' do
       invoice = create(:invoice)
       merchant = create(:merchant)
       item_1 = create(:item, merchant: merchant)
@@ -71,10 +123,10 @@ RSpec.describe Invoice, type: :model do
                               merchant: merchant,
                               percentage_discount: 20,
                               quantity_threshold: 10)
-      expect(invoice.discounted_invoice_revenue(merchant)).to eq 100
+      expect(invoice.discounted_merchant_invoice_revenue(merchant)).to eq 100
     end
 
-    it 'which discount: example2' do
+    it 'example2' do
       invoice = create(:invoice)
       merchant = create(:merchant)
       item_1 = create(:item, merchant: merchant)
@@ -85,10 +137,10 @@ RSpec.describe Invoice, type: :model do
                               merchant: merchant,
                               percentage_discount: 20,
                               quantity_threshold: 10)
-      expect(invoice.discounted_invoice_revenue(merchant)).to eq 130
+      expect(invoice.discounted_merchant_invoice_revenue(merchant)).to eq 130
     end
 
-    it 'which discount: example3' do
+    it 'example3' do
       invoice = create(:invoice)
       merchant = create(:merchant)
       item_a = create(:item, merchant: merchant)
@@ -103,10 +155,10 @@ RSpec.describe Invoice, type: :model do
                               merchant: merchant,
                               percentage_discount: 30,
                               quantity_threshold: 15)
-      expect(invoice.discounted_invoice_revenue(merchant)).to eq 201
+      expect(invoice.discounted_merchant_invoice_revenue(merchant)).to eq 201
     end
 
-    it 'which discount: example4' do
+    it 'example4' do
       invoice = create(:invoice)
       merchant = create(:merchant)
       item_a = create(:item, merchant: merchant)
@@ -121,10 +173,10 @@ RSpec.describe Invoice, type: :model do
                               merchant: merchant,
                               percentage_discount: 15,
                               quantity_threshold: 15)
-      expect(invoice.discounted_invoice_revenue(merchant)).to eq 216
+      expect(invoice.discounted_merchant_invoice_revenue(merchant)).to eq 216
     end
 
-    it 'which discount: example5' do
+    it 'example5' do
       invoice = create(:invoice)
       other_invoice = create(:invoice)
       merchant_1 = create(:merchant)
@@ -145,7 +197,7 @@ RSpec.describe Invoice, type: :model do
                               merchant: merchant_2,
                               percentage_discount: 30,
                               quantity_threshold: 15)
-      expect(invoice.discounted_invoice_revenue(merchant_1)).to eq 201
+      expect(invoice.discounted_merchant_invoice_revenue(merchant_1)).to eq 201
     end
   end
 end

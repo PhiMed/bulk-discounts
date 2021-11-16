@@ -24,6 +24,13 @@ class Invoice < ApplicationRecord
     invoice_items.invoice_item_revenue
   end
 
+  def discounted_invoice_revenue
+  end
+
+  def merchant_invoice_revenue(merchant)
+
+  end
+
   def bulk_discounts_for_this_invoice(merchant)
      BulkDiscount.all
      .joins(merchant: {items: :invoice_items})
@@ -69,7 +76,7 @@ class Invoice < ApplicationRecord
     item_discount_hash
   end
 
-  def discounted_invoice_revenue(merchant)
+  def discounted_merchant_invoice_revenue(merchant)
     hash = item_discount_hash(merchant)
     if hash.empty?
       discounted_total = self.invoice_revenue
