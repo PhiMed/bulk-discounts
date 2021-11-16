@@ -24,44 +24,20 @@ class Invoice < ApplicationRecord
     invoice_items.invoice_item_revenue
   end
 
-  def discounted_invoice_revenue
-    merchants = Merchant.where(:id => items.pluck(:merchant_id).uniq)
-    discounted_total = 0
-    merchants.each do |m|
-      discounted_total += discounted_merchant_invoice_revenue(m)
-    end
-    discounted_total
+  def merchants_invoice_items(merchant)
+    invoice_items.joins(item: :merchant)
+                 .where('merchant_id  = ?', merchant.id)
   end
 
   def merchant_invoice_revenue(merchant)
     merchants_invoice_items(merchant).sum("invoice_items.quantity * invoice_items.unit_price")
   end
 
-  def discounted_merchant_invoice_revenue(merchant)
-    hash = item_discount_hash(merchant)
-    if hash.empty?
-      discounted_total = self.invoice_revenue
-    else
-      discounted_total = 0
-      hash.values.each do |item|
-        discounted_total += item[:discounted_item_revenue]
-      end
-    end
-    discounted_total
-  end
-
   def bulk_discounts_for_this_invoice(merchant)
-     BulkDiscount.all
-     .joins(merchant: {items: :invoice_items})
-     .where('invoice_id = ?', self.id)
-     .where('merchants.id  = ?', merchant.id)
-     .order(:percentage_discount)
-     .select('bulk_discounts.*')
-  end
-
-  def merchants_invoice_items(merchant)
-    invoice_items.joins(item: :merchant)
-                 .where('merchant_id  = ?', merchant.id)
+    BulkDiscount.all
+                .joins(merchant: {items: :invoice_items})
+                .where('invoice_id = ?', self.id)
+                .where('merchants.id  = ?', merchant.id)
   end
 
   def item_discount_hash(merchant)
@@ -80,17 +56,39 @@ class Invoice < ApplicationRecord
             best_discount: best_discount.id,
             discounted_item_revenue:
               (invoice_item.quantity * invoice_item.unit_price *
-              (100 - (best_discount.percentage_discount.to_f))/100),
-            best_percentage: best_discount.percentage_discount}
+              (100 - (best_discount.percentage_discount.to_f))/100)
+                                                  }
         else
           item_discount_hash[invoice_item.id] = {
             best_discount: nil,
             discounted_item_revenue:
-             (invoice_item.quantity * invoice_item.unit_price),
-            best_percentage: nil}
+             (invoice_item.quantity * invoice_item.unit_price)
+                                                  }
         end
       end
     end
     item_discount_hash
+  end
+
+  def discounted_merchant_invoice_revenue(merchant)
+    hash = item_discount_hash(merchant)
+    if hash.empty?
+      discounted_total = merchant_invoice_revenue(merchant)
+    else
+      discounted_total = 0
+      hash.values.each do |item|
+        discounted_total += item[:discounted_item_revenue]
+      end
+    end
+    discounted_total
+  end
+
+  def discounted_invoice_revenue
+    merchants = Merchant.where(:id => items.pluck(:merchant_id).uniq)
+    discounted_total = 0
+    merchants.each do |m|
+      discounted_total += discounted_merchant_invoice_revenue(m)
+    end
+    discounted_total
   end
 end
