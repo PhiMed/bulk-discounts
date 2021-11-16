@@ -197,7 +197,7 @@ RSpec.describe Invoice, type: :model do
                               merchant: merchant_2,
                               percentage_discount: 30,
                               quantity_threshold: 15)
-      expect(invoice.discounted_merchant_invoice_revenue(merchant_1)).to eq 201
+      expect(invoice.discounted_merchant_invoice_revenue(merchant_1)).to eq 216
     end
   end
 end
