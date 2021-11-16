@@ -6,7 +6,7 @@
 <hr>
 
 <%= form_with url: "/merchants", method: :get, local: true do |f| %>
-  <%= f.label :merchant_id %>
-  <%= f.number_field :id, required: true  %><br>
-  <%= f.submit %>
+  <%= f.label "Merchant ID:" %>
+  <%= f.text_field :id, required: true  %><br>
+  <%= f.submit "Go to Merchant Dashboard"%>
 <% end %>
