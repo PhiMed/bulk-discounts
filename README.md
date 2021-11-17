@@ -9,7 +9,9 @@
 
 Little Esty Shop is a webhosted application that emulates the workings of a typical web store.
 
-Bulk Discounts is an extension of this project, in which a mechanism has been added for merchants to create bulk discounts that are applied to their items at point-of-sale. The discounts have attributes for minimum item quantity threshhold and what percentage discount is applied (eg minimum 4 items, 20% discount applied). Once in place, a merchant's bulk discounts are automatically applied to an invoice with that merchant's items. Logic is built in to only apply the discount to eligible items belonging to that merchant, to select for the best (highest) discount when multiple apply, and handle complex scenarios involving multiple item quantities with multiple discounts and multiple merchants on a single invoice. Additional, it can provide discount revenue information to merchants and administrators of the application.
+Bulk Discounts is an extension of this project, in which a mechanism has been added for merchants to create bulk discounts that are applied to their items at point-of-sale. The discounts have attributes for minimum item quantity threshhold and what percentage discount is applied (eg minimum 4 items, 20% discount applied). Once in place, a merchant's bulk discounts are automatically applied to an invoice with that merchant's items. Logic is built in to only apply the discount to eligible items belonging to that merchant, to select for the best (highest) discount when multiple apply, and handle complex scenarios involving multiple item quantities with multiple discounts and multiple merchants on a single invoice. Additionally, it can provide discount revenue information to merchants and administrators of the application.
+
+Lastly, upcoming US holiday information is provided via API on the bulk discount index, to aid merchants with planning holiday sales.
 
 ## Pages
 
