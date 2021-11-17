@@ -1,6 +1,6 @@
 # Bulk Discounts
 
-![IMG_2824 2](https://user-images.githubusercontent.com/87627363/142140905-045d4761-eca3-4d70-ba88-8a840599cbcd.JPG =250x)
+![IMG_2824 2](https://user-images.githubusercontent.com/87627363/142141234-a5d44b6d-c0f9-4976-9180-77911026b186.JPG)
 
 
 [Link to Page](https://bulk-discounts-phimed.herokuapp.com/)
