@@ -1,5 +1,6 @@
 # Bulk Discounts
 
+![IMG_2824 2](https://user-images.githubusercontent.com/87627363/142140905-045d4761-eca3-4d70-ba88-8a840599cbcd.JPG)
 
 
 [Link to Page](https://bulk-discounts-phimed.herokuapp.com/)
@@ -24,7 +25,6 @@ On the admin dashboard you see information about all invoices and custormers for
 
 
 ## Schema
-![bulk-discount-schema](https://user-images.githubusercontent.com/87627363/142140762-e783ac9f-64![Uploading IMG_2824 2.JPG…]()
-da-4da9-862c-778113542b1f.png)
+![bulk-discount-schema](https://user-images.githubusercontent.com/87627363/142140892-edc2c746-3f7b-4e5a-b52b-f71a6d2d8563.png)
 
 
