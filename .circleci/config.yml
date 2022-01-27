@@ -10,7 +10,7 @@ jobs:
     docker:
       - image: cimg/base:stable
 
-      - steps:
+    - steps:
         - ruby/install:
             version: '2.5.2'
         - ruby/rspec-test
