@@ -4,13 +4,13 @@ workflows:
   example-workflow:
     jobs:
       - example-job
-  jobs:
-    example-job:
-      docker:
-        # replace with your preferred image
-        - image: cimg/base:stable
-      steps:
-        - ruby/install:
-            version: '2.5.2'
-        - ruby/rspec-test
-        - ruby/install-deps
+jobs:
+  example-job:
+    docker:
+      # replace with your preferred image
+      - image: cimg/base:stable
+    steps:
+      - ruby/install:
+          version: '2.5.2'
+      - ruby/rspec-test
+      - ruby/install-deps
