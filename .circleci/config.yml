@@ -4,7 +4,7 @@ orbs:
 workflows:
   heroku_deploy:
     jobs:
-      - build
+      build: ~/bulk_discount
       - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
           requires:
             - build # only run deploy-via-git job if the build job has completed
@@ -12,7 +12,7 @@ workflows:
             branches:
               only: main # only run deploy-via-git job on main branch
 jobs: # a collection of steps
-  build: # runs not using Workflows must have a `build` job as entry point
+  build: ~/bulk_discount
     parallelism: 1 # run three instances of this job in parallel
     docker: # run the steps with Docker
       - image: circleci/ruby:2.7.2 # ...with this image as the primary container; this is where all `steps` will run
