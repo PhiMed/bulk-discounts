@@ -26,3 +26,15 @@ workflows:
   example-workflow:
     jobs:
       - example-job
+
+      jobs:
+  example-job:
+    docker:
+      # replace with your preferred image
+      - image: cimg/base:stable
+    steps:
+      - ruby/rspec-test
+workflows:
+  example-workflow:
+    jobs:
+      - example-job
