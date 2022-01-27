@@ -1,40 +1,16 @@
 orbs:
   ruby: circleci/ruby@1.4.0
-
+workflows:
+  example-workflow:
+    jobs:
+      - example-job
   jobs:
-  example-job:
-    docker:
-      # replace with your preferred image
-      - image: cimg/base:stable
-    steps:
-      - ruby/install:
-          version: '2.5.2' 
-
-workflows:
-  example-workflow:
-    jobs:
-      - example-job
-
-      jobs:
-  example-job:
-    docker:
-      # replace with your preferred image
-      - image: cimg/base:stable
-    steps:
-      - ruby/install-deps
-workflows:
-  example-workflow:
-    jobs:
-      - example-job
-
-      jobs:
-  example-job:
-    docker:
-      # replace with your preferred image
-      - image: cimg/base:stable
-    steps:
-      - ruby/rspec-test
-workflows:
-  example-workflow:
-    jobs:
-      - example-job
+    example-job:
+      docker:
+        # replace with your preferred image
+        - image: cimg/base:stable
+      steps:
+        - ruby/install:
+            version: '2.5.2'
+        - ruby/rspec-test
+        - ruby/install-deps
