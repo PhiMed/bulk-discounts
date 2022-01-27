@@ -6,14 +6,15 @@ orbs:
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  docker:
-    - image: cimg/base:stable
   say-hello:
-    - steps:
-      - ruby/install:
-          version: '2.5.2'
-      - ruby/rspec-test
-      - ruby/install-deps
+    docker:
+      - image: cimg/base:stable
+
+      - steps:
+        - ruby/install:
+            version: '2.5.2'
+        - ruby/rspec-test
+        - ruby/install-deps
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
